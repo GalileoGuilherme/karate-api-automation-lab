@@ -78,3 +78,4 @@ Feature: Validação de Cupons Promocionais e Cálculo de Frete (Swagger /api-do
     Then status 400
     And match response.success == false
     And match response.error contains 'obrigatório'
+

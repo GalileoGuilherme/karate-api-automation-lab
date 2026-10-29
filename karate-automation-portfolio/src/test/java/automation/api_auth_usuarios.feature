@@ -98,3 +98,4 @@ Feature: Gestão de Autenticação e Usuários (Swagger /api-docs)
     And match response.user.phone == '(81) 99999-8888'
     And match response.user.address == 'Av. Boa Viagem, 1000 - Recife, PE'
     And match response.user.updatedAt == '#string'
+
