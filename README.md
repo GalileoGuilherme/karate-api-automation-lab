@@ -1,42 +1,64 @@
 # Karate AI & Automation Starter 🥋
 
-Projeto de automação de testes com **Karate Framework (1.4.1)**, **Maven** e **JUnit 5** para UI e API, incluindo uma aplicação local reproduzível e suíte completa para a [Loja de Testes pública](https://portfolio-omega-six-18.vercel.app/automation).
+Projeto de automação de testes de alta performance com **Karate Framework (1.4.1)**, **Maven** e **JUnit 5** focado na validação completa dos contratos, regras de negócio e cenários da API REST documentada no [Swagger OpenAPI (/api-docs)](https://portfolio-omega-six-18.vercel.app/api-docs) e dos fluxos da aplicação pública [Automação QA](https://portfolio-omega-six-18.vercel.app/automation).
 
 ## Requisitos
 
 - **Java JDK 11 ou superior** (homologado inclusive com Java 17 e 21 LTS)
 - **Apache Maven 3.9 ou superior**
-- **Node.js 18 ou superior** (para execução da aplicação local de demonstração)
+- **Node.js 18 ou superior** (para execução de scripts e da demo local)
 - **Google Chrome** (para os testes de interface gráfica com Karate Driver)
 
 ## O que o projeto demonstra
 
-- Automação de testes Karate de UI e API com sintaxe nativa BDD/Gherkin.
-- Testes E2E de uma aplicação local reproduzível (**Wallet API** e **Login UI**), sem depender de serviços externos.
-- Suíte completa de testes de contrato, integridade de cabeçalhos HTTP, autenticação e regras de negócio para a [Loja de Testes](https://portfolio-omega-six-18.vercel.app/automation).
-- Suporte a eventos reais de teclado (`Key.TAB`, `Key.ENTER`) e manipulação de elementos via Chrome DevTools Protocol (CDP).
-- Relatórios nativos ricos em HTML interativo com métricas de tempo, requisições, payloads e status de cada passo.
+- **Cobertura completa de API REST**: 43 cenários automatizados cobrindo 100% dos endpoints especificados no [Swagger /api-docs](https://portfolio-omega-six-18.vercel.app/api-docs).
+- **Validação de Contratos e Schemas JSON**: Verificação estrita de payloads, tipos de dados (`#string`, `#number`, `#regex`), códigos HTTP de sucesso (`200`, `201`) e tratamento de erros (`400`, `401`, `404`, `405`).
+- **Automação E2E e UI com Karate Driver**: Navegação no Google Chrome, validação visual, preenchimento de formulários e interação por teclado (`Key.TAB`, `Key.ENTER`) via Chrome DevTools Protocol (CDP).
+- **Testes de Integração e Negócio**: Gestão de ciclo de vida completo de compras (Login ➔ Catálogo ➔ Carrinho ➔ Cupom de Desconto ➔ Cálculo de Frete ➔ Criação de Pedido).
+- **Relatórios Interativos HTML**: Geração automática de métricas executivas de execução, tempos de resposta e rastreamento completo de tráfego HTTP.
 
-## Estrutura
+## Cobertura da API REST (Swagger / OpenAPI)
+
+Os testes foram organizados de acordo com as tags e módulos da documentação oficial disponível em [https://portfolio-omega-six-18.vercel.app/api-docs](https://portfolio-omega-six-18.vercel.app/api-docs):
+
+| Módulo / Tag | Endpoints Cobertos | Arquivo Feature | Cenários |
+| --- | --- | --- | :---: |
+| **Monitoramento** | `GET /api/health` | `api_health.feature` | 2 |
+| **Autenticação & Usuários** | `POST /api/auth/login`<br>`POST /api/auth/register`<br>`POST /api/auth/logout`<br>`GET/PUT /api/users/me` | `api_auth_usuarios.feature` | 9 |
+| **Catálogo de Produtos** | `GET /api/products`<br>`GET /api/products?category=`<br>`GET /api/products/search?q=`<br>`GET/DELETE /api/products/{id}`<br>`POST /api/products` | `api_produtos.feature` | 9 |
+| **Carrinho de Compras** | `GET /api/cart`<br>`POST /api/cart`<br>`PUT/DELETE /api/cart/{id}`<br>`DELETE /api/cart` | `api_carrinho.feature` | 8 |
+| **Cupons e Frete** | `POST /api/coupons/validate`<br>`POST /api/shipping/calculate` | `api_cupons_frete.feature` | 10 |
+| **Pedidos (Checkout)** | `GET /api/orders`<br>`GET /api/orders/{id}`<br>`POST /api/orders` | `api_pedidos_checkout.feature` | 5 |
+
+## Estrutura do Projeto
 
 ```text
 karate-api-automation-lab/
 ├── demo/                                    # Aplicação local reproduzível (Node.js)
 │   ├── index.html                           # Interface visual da demo (login & dashboard)
 │   └── server.mjs                           # Servidor HTTP com endpoints de Wallet e Login
-├── karate-automation-portfolio/             # Módulo do projeto Maven / Karate JUnit 5
+├── docs/
+│   └── assets/
+│       └── karate-summary.png               # Evidência oficial do relatório Karate
+├── karate-automation-portfolio/             # Módulo Maven / Karate JUnit 5
 │   ├── pom.xml                              # Dependências do Karate 1.4.1 e Surefire
 │   └── src/test/java/
-│       ├── karate-config.js                 # Configurações globais de ambiente e timeouts
+│       ├── karate-config.js                 # Configurações globais, endpoints e timeouts
 │       └── automation/
 │           ├── TestRunner.java              # JUnit 5 Runner modular
-│           ├── loja_testes.feature          # Suíte completa da Loja de Testes pública
-│           ├── autenticacao_ui.feature      # Automação de interface no Chrome (Login & Teclado)
-│           ├── catalogo_carrinho_ui.feature # Automação de interface no Chrome (Catálogo & Carrinho)
+│           ├── api_health.feature           # Monitoramento e Health Check
+│           ├── api_auth_usuarios.feature    # Autenticação, Cadastro e Perfil
+│           ├── api_produtos.feature         # Catálogo, Busca e Gestão de Produtos
+│           ├── api_carrinho.feature         # Gestão Completa do Carrinho
+│           ├── api_cupons_frete.feature     # Validação de Cupons e Cálculo de Frete
+│           ├── api_pedidos_checkout.feature # Finalização de Compras e Pedidos
+│           ├── loja_testes.feature          # Suíte combinada da Loja pública
+│           ├── autenticacao_ui.feature      # Automação de interface no Chrome (Login)
+│           ├── catalogo_carrinho_ui.feature # Automação de interface no Chrome (Catálogo)
 │           ├── demo_wallet_api.feature      # Teste replicado da Wallet API local
 │           ├── demo_login_api.feature       # Teste replicado de Login API local
 │           └── demo_login_ui.feature        # Teste replicado de Login UI local
-├── package.json                             # Scripts npm integrados
+├── package.json                             # Scripts NPM integrados
 ├── pom.xml                                  # Maven Aggregator raiz
 └── README.md                                # Documentação técnica
 ```
@@ -49,32 +71,67 @@ Compile o projeto e baixe as dependências do Maven:
 mvn clean compile
 ```
 
-## Executar a demo e os testes locais
+## Como Executar
 
-Inicie a aplicação de demonstração em um terminal:
+### 1. Executar a Suíte Completa de APIs (Swagger /api-docs)
+
+Para rodar todos os 43 cenários de API:
+
+```bash
+npm test
+# ou via Maven:
+mvn test -Dtest=TestRunner#testAllApis
+```
+
+### 2. Executar Testes por Módulo da API
+
+Você pode executar cada domínio isoladamente:
+
+```bash
+# Monitoramento e Health Check
+npm run test:health
+mvn test -Dtest=TestRunner#testHealthApi
+
+# Autenticação e Usuários
+npm run test:auth
+mvn test -Dtest=TestRunner#testAuthUsuariosApi
+
+# Catálogo e Produtos
+npm run test:products
+mvn test -Dtest=TestRunner#testProdutosApi
+
+# Carrinho de Compras
+npm run test:cart
+mvn test -Dtest=TestRunner#testCarrinhoApi
+
+# Cupons e Cálculo de Frete
+npm run test:coupons
+mvn test -Dtest=TestRunner#testCuponsFreteApi
+
+# Pedidos e Checkout
+npm run test:orders
+mvn test -Dtest=TestRunner#testPedidosCheckoutApi
+```
+
+### 3. Executar Testes de Interface Gráfica (UI no Google Chrome)
+
+Para disparar os testes de interface gráfica via Karate Driver:
+
+```bash
+npm run test:ui
+# ou via Maven:
+mvn test -Dtest=TestRunner#testUiSuite
+```
+
+### 4. Executar a Demo Local (Wallet API + Login)
+
+Inicie o servidor local em um terminal:
 
 ```bash
 npm run demo
 ```
 
-Ela ficará disponível em `http://localhost:3000`. A tela de login usa estas credenciais locais:
-
-```text
-E-mail: demo@example.com
-Senha:  Cypress123!
-```
-
-O endpoint de exemplo `GET /api/wallet/balance/demo-wallet` retorna uma carteira fixa com saldo de demonstração:
-
-```json
-{
-  "walletId": "demo-wallet",
-  "balance": 125.5,
-  "currency": "BRL"
-}
-```
-
-Em outro terminal, execute os testes da demo local:
+Em outro terminal, execute os testes da demo:
 
 ```bash
 npm run test:demo
@@ -82,45 +139,23 @@ npm run test:demo
 mvn test -Dtest=TestRunner#testDemoSuite
 ```
 
-> **Atenção:** A aplicação é apenas uma demo local. Credenciais fixas e endpoints simplificados não devem ser usados em produção.
-
-## Executar a suíte da Loja de Testes (Pública)
-
-Para executar a suíte completa contra a aplicação pública [Automação QA](https://portfolio-omega-six-18.vercel.app/automation):
-
-```bash
-npm run test:loja
-# ou via Maven:
-mvn test -Dtest=TestRunner#testLojaSuite
-```
-
-Para executar testes de API sem interface gráfica:
-
-```bash
-npm run test:api
-# ou via Maven:
-mvn test "-Dkarate.options=--tags ~@ui"
-```
-
-Para executar testes de interface gráfica no Google Chrome via Karate Driver:
-
-```bash
-npm run test:ui
-# ou via Maven:
-mvn test "-Dkarate.options=--tags @ui"
-```
-
-## Scripts disponíveis
+## Scripts Disponíveis
 
 | Comando | Descrição |
 | --- | --- |
-| `npm run demo` | Inicia a aplicação local de demonstração em `http://localhost:3000` |
-| `npm test` | Executa a suíte principal da Loja de Testes via Karate JUnit 5 |
-| `npm run test:all` | Executa todas as features do projeto (Loja pública + Demo local) |
-| `npm run test:loja` | Executa os testes de API e UI da Loja de Testes pública |
-| `npm run test:demo` | Executa os testes replicados da Wallet API e Login local |
-| `npm run test:api` | Executa apenas os testes de API (sem navegador) |
-| `npm run test:ui` | Executa os testes de UI no Google Chrome via Karate Driver |
+| `npm test` | Executa a suíte completa de APIs do Swagger (43 cenários) |
+| `npm run test:apis` | Alias para execução de todas as APIs |
+| `npm run test:health` | Executa os testes de Health Check (`GET /api/health`) |
+| `npm run test:auth` | Executa os testes de Login, Registro, Logout e Perfil |
+| `npm run test:products` | Executa os testes de Catálogo, Busca e Produtos |
+| `npm run test:cart` | Executa os testes de Carrinho de Compras |
+| `npm run test:coupons` | Executa os testes de Validação de Cupons e Frete |
+| `npm run test:orders` | Executa os testes de Criação e Consulta de Pedidos |
+| `npm run test:ui` | Executa os testes visuais de interface no Google Chrome |
+| `npm run test:loja` | Executa a suíte E2E da Loja pública |
+| `npm run test:demo` | Executa os testes da aplicação demo local |
+| `npm run test:all` | Executa todas as features do projeto |
+| `npm run demo` | Inicia o servidor Node.js local em `http://localhost:3000` |
 | `npm run report` | Abre o relatório interativo HTML gerado no navegador padrão |
 
 ## Relatórios de Execução
@@ -134,4 +169,3 @@ start karate-automation-portfolio/target/karate-reports/karate-summary.html
 O Karate Framework gera relatórios completos em formato HTML contendo o sumário executivo, status de cada feature e cenário, tempos de resposta e rastreamento detalhado de requisições e passos de UI:
 
 ![Karate Summary Report](docs/assets/karate-summary.png)
-

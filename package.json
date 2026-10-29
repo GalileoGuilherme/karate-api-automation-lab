@@ -1,20 +1,30 @@
 {
   "name": "karate-api-automation-lab",
   "version": "1.0.0",
-  "description": "Karate Framework Automation Lab para testes de API e UI",
+  "description": "Karate Framework Automation Lab para testes das APIs REST do Swagger (/api-docs) e interface E2E",
   "scripts": {
-    "demo": "node demo/server.mjs",
-    "test": "mvn test -Dtest=TestRunner#testLojaSuite",
-    "test:all": "mvn test",
+    "test": "mvn test -Dtest=TestRunner#testAllApis",
+    "test:apis": "mvn test -Dtest=TestRunner#testAllApis",
+    "test:swagger": "mvn test -Dtest=TestRunner#testAllApis",
+    "test:health": "mvn test -Dtest=TestRunner#testHealthApi",
+    "test:auth": "mvn test -Dtest=TestRunner#testAuthUsuariosApi",
+    "test:products": "mvn test -Dtest=TestRunner#testProdutosApi",
+    "test:cart": "mvn test -Dtest=TestRunner#testCarrinhoApi",
+    "test:coupons": "mvn test -Dtest=TestRunner#testCuponsFreteApi",
+    "test:orders": "mvn test -Dtest=TestRunner#testPedidosCheckoutApi",
+    "test:ui": "mvn test -Dtest=TestRunner#testUiSuite",
     "test:loja": "mvn test -Dtest=TestRunner#testLojaSuite",
     "test:demo": "mvn test -Dtest=TestRunner#testDemoSuite",
-    "test:ui": "mvn test \"-Dkarate.options=--tags @ui\"",
-    "test:api": "mvn test \"-Dkarate.options=--tags ~@ui\"",
+    "test:all": "mvn test",
+    "demo": "node demo/server.mjs",
     "report": "powershell -Command \"Start-Process karate-automation-portfolio/target/karate-reports/karate-summary.html\""
   },
   "keywords": [
     "karate-framework",
     "api-testing",
+    "rest-api",
+    "swagger",
+    "openapi",
     "ui-automation",
     "qa",
     "bdd",
@@ -24,4 +34,3 @@
   "author": "Galileo Guilherme",
   "license": "MIT"
 }
-
