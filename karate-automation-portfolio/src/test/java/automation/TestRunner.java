@@ -11,6 +11,25 @@ import com.intuit.karate.junit5.Karate;
 public class TestRunner {
 
     /**
+     * Executa a suíte completa contendo todos os testes de API (Swagger OpenAPI)
+     * e todas as automações de interface gráfica (UI) da aplicação.
+     */
+    @Karate.Test
+    Karate testAll() {
+        return Karate.run(
+            "api_health",
+            "api_auth_usuarios",
+            "api_produtos",
+            "api_carrinho",
+            "api_cupons_frete",
+            "api_pedidos_checkout",
+            "loja_testes",
+            "autenticacao_ui",
+            "catalogo_carrinho_ui"
+        ).relativeTo(getClass());
+    }
+
+    /**
      * Executa todos os testes de API documentados no Swagger OpenAPI:
      * - Health Check (/api/health)
      * - Autenticação e Gestão de Usuários (/api/auth/* e /api/users/*)

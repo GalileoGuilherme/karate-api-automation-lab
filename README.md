@@ -124,8 +124,11 @@ A suíte cobre integralmente todos os módulos e operações descritas no Swagge
 | **Frete CEP** | `POST` | `/api/shipping/calculate` | [`api_cupons_frete.feature`](karate-automation-portfolio/src/test/java/automation/api_cupons_frete.feature) | **4** | 🟢 100% |
 | **Pedidos** | `GET`, `POST` | `/api/orders` | [`api_pedidos_checkout.feature`](karate-automation-portfolio/src/test/java/automation/api_pedidos_checkout.feature) | **3** | 🟢 100% |
 | **Consulta Pedido**| `GET` | `/api/orders/{id}` | [`api_pedidos_checkout.feature`](karate-automation-portfolio/src/test/java/automation/api_pedidos_checkout.feature) | **2** | 🟢 100% |
+| **Autenticação UI** | `Browser / CDP` | `/automation` | [`autenticacao_ui.feature`](karate-automation-portfolio/src/test/java/automation/autenticacao_ui.feature) | **4** | 🟢 100% |
+| **Catálogo & Carrinho UI** | `Browser / CDP` | `/automation` | [`catalogo_carrinho_ui.feature`](karate-automation-portfolio/src/test/java/automation/catalogo_carrinho_ui.feature) | **3** | 🟢 100% |
+| **Regras da Loja** | `HTTP / Contrato` | `/automation` | [`loja_testes.feature`](karate-automation-portfolio/src/test/java/automation/loja_testes.feature) | **9** | 🟢 100% |
 
-> **Total de Cenários de API Automatizados:** **43 cenários** (100% de sucesso).
+> **Total da Suíte Unificada:** **9 Features / 59 Cenários Automatizados** (100% de sucesso e 0 falhas).
 
 ---
 
@@ -257,7 +260,7 @@ mvn test -Dtest=TestRunner#testDemoSuite
 
 | Comando | Descrição |
 | --- | --- |
-| `npm test` | **Executa a suíte completa de APIs do Swagger (43 cenários)** |
+| `npm test` | **Executa a suíte master completa (todos os 59 cenários de API e UI)** |
 | `npm run test:apis` | Alias para execução de todas as features de API |
 | `npm run test:health` | Executa os testes de Health Check (`GET /api/health`) |
 | `npm run test:auth` | Executa os testes de Login, Registro, Logout e Perfil |

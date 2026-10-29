@@ -44,8 +44,11 @@ Ele implementa cobertura integral de testes de contrato e integração para as A
 | **Frete CEP** | `POST` | `/api/shipping/calculate` | [`api_cupons_frete.feature`](src/test/java/automation/api_cupons_frete.feature) | **4** | 🟢 100% |
 | **Pedidos** | `GET`, `POST` | `/api/orders` | [`api_pedidos_checkout.feature`](src/test/java/automation/api_pedidos_checkout.feature) | **3** | 🟢 100% |
 | **Consulta Pedido**| `GET` | `/api/orders/{id}` | [`api_pedidos_checkout.feature`](src/test/java/automation/api_pedidos_checkout.feature) | **2** | 🟢 100% |
+| **Autenticação UI** | `Browser / CDP` | `/automation` | [`autenticacao_ui.feature`](src/test/java/automation/autenticacao_ui.feature) | **4** | 🟢 100% |
+| **Catálogo & Carrinho UI** | `Browser / CDP` | `/automation` | [`catalogo_carrinho_ui.feature`](src/test/java/automation/catalogo_carrinho_ui.feature) | **3** | 🟢 100% |
+| **Regras da Loja** | `HTTP / Contrato` | `/automation` | [`loja_testes.feature`](src/test/java/automation/loja_testes.feature) | **9** | 🟢 100% |
 
-> **Total de Cenários de API do Swagger:** **43 cenários** com 100% de sucesso.
+> **Total da Suíte Completa:** **9 Features / 59 Cenários Automatizados** (100% de sucesso e 0 falhas).
 
 ---
 
