@@ -1,0 +1,27 @@
+{
+  "name": "karate-api-automation-lab",
+  "version": "1.0.0",
+  "description": "Karate Framework Automation Lab para testes de API e UI",
+  "scripts": {
+    "demo": "node demo/server.mjs",
+    "test": "mvn test -Dtest=TestRunner#testLojaSuite",
+    "test:all": "mvn test",
+    "test:loja": "mvn test -Dtest=TestRunner#testLojaSuite",
+    "test:demo": "mvn test -Dtest=TestRunner#testDemoSuite",
+    "test:ui": "mvn test \"-Dkarate.options=--tags @ui\"",
+    "test:api": "mvn test \"-Dkarate.options=--tags ~@ui\"",
+    "report": "powershell -Command \"Start-Process karate-automation-portfolio/target/karate-reports/karate-summary.html\""
+  },
+  "keywords": [
+    "karate-framework",
+    "api-testing",
+    "ui-automation",
+    "qa",
+    "bdd",
+    "cucumber",
+    "junit5"
+  ],
+  "author": "Galileo Guilherme",
+  "license": "MIT"
+}
+
