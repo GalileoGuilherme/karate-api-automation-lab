@@ -67,3 +67,8 @@ Após a execução, visualize o relatório gerado pelo Karate:
 ```powershell
 start target/karate-reports/karate-summary.html
 ```
+
+O Karate Framework gera relatórios completos em formato HTML contendo o sumário executivo, status de cada feature e cenário, tempos de resposta e rastreamento detalhado de requisições e passos de UI:
+
+![Karate Summary Report](docs/assets/karate-summary.png)
+
