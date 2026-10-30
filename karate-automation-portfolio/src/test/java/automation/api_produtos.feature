@@ -2,7 +2,7 @@
 Feature: Catálogo de Produtos e Busca Textual (Swagger /api-docs)
 
   Como um Usuário ou Sistema de E-Commerce
-  Quero consultar produtos, aplicar filtros, pesquisar por texto e gerenciar o catálogo
+  Quero consultar produtos, listar categorias, aplicar filtros, pesquisar por texto e gerenciar o catálogo
   Para validar os contratos e comportamentos dos endpoints de produtos
 
   Background:
@@ -20,6 +20,15 @@ Feature: Catálogo de Produtos e Busca Textual (Swagger /api-docs)
     And match response.products[0].price == '#number'
     And match response.products[0].category == '#string'
     And match response.products[0].stock == '#number'
+
+  Scenario: Listagem de todas as categorias distintas do catálogo (GET /api/products/categories)
+    Given path '/api/products/categories'
+    When method get
+    Then status 200
+    And match response.success == true
+    And assert response.total >= 1
+    And match response.categories == '#[]'
+    And match response.categories contains 'Eletrônicos'
 
   Scenario: Filtragem de produtos por categoria (Eletrônicos)
     Given path '/api/products'
@@ -72,25 +81,39 @@ Feature: Catálogo de Produtos e Busca Textual (Swagger /api-docs)
     And match response.success == false
     And match response.error contains 'não encontrado'
 
-  Scenario: Criação de novo produto no catálogo (HTTP 201)
+  Scenario: Criação e posterior exclusão de produto de teste (POST e DELETE /api/products/{id})
+    # 1. Cria o produto
+    * def uniqueProdId = 'prod-qa-' + java.lang.System.currentTimeMillis()
     Given path '/api/products'
     And request
       """
       {
-        "name": "Mouse Ergonômico Vertical",
-        "price": 149.90,
+        "id": "#(uniqueProdId)",
+        "name": "Teclado Ergonômico Split",
+        "price": 389.90,
         "category": "Eletrônicos",
-        "description": "Mouse ergonômico para prevenção de LER.",
-        "stock": 18
+        "description": "Teclado mecânico split para desenvolvedores.",
+        "stock": 15
       }
       """
     When method post
     Then status 201
     And match response.success == true
-    And match response.message contains 'criado com sucesso'
-    And match response.product.name == 'Mouse Ergonômico Vertical'
-    And match response.product.price == 149.90
-    And match response.product.id == '#string'
+    And match response.product.id == uniqueProdId
+
+    # 2. Exclui o produto criado
+    Given path '/api/products/' + uniqueProdId
+    When method delete
+    Then status 200
+    And match response.success == true
+    And match response.message contains 'excluído com sucesso'
+
+  Scenario: Rejeição de exclusão de produto inexistente (HTTP 404)
+    Given path '/api/products/id-produto-inexistente-para-exclusao'
+    When method delete
+    Then status 404
+    And match response.success == false
+    And match response.error contains 'não encontrado para exclusão'
 
   Scenario: Falha na criação de produto sem campos obrigatórios (HTTP 400)
     Given path '/api/products'

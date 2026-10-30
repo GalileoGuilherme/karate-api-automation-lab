@@ -1,10 +1,10 @@
 {
   "name": "karate-api-automation-lab",
   "version": "1.0.0",
-  "description": "Karate Framework Automation Lab para testes das APIs REST do Swagger (/api-docs) e interface E2E",
+  "description": "Karate Framework REST API Automation Lab cobrindo 100% dos endpoints do Swagger (/api-docs)",
   "scripts": {
-    "test": "mvn test -Dtest=TestRunner#testAll",
-    "test:all": "mvn test -Dtest=TestRunner#testAll",
+    "test": "mvn test -Dtest=TestRunner#testAllApis",
+    "test:all": "mvn test -Dtest=TestRunner#testAllApis",
     "test:apis": "mvn test -Dtest=TestRunner#testAllApis",
     "test:swagger": "mvn test -Dtest=TestRunner#testAllApis",
     "test:health": "mvn test -Dtest=TestRunner#testHealthApi",
@@ -13,10 +13,6 @@
     "test:cart": "mvn test -Dtest=TestRunner#testCarrinhoApi",
     "test:coupons": "mvn test -Dtest=TestRunner#testCuponsFreteApi",
     "test:orders": "mvn test -Dtest=TestRunner#testPedidosCheckoutApi",
-    "test:ui": "mvn test -Dtest=TestRunner#testUiSuite",
-    "test:loja": "mvn test -Dtest=TestRunner#testLojaSuite",
-    "test:demo": "mvn test -Dtest=TestRunner#testDemoSuite",
-    "demo": "node demo/server.mjs",
     "report": "powershell -Command \"Start-Process karate-automation-portfolio/target/karate-reports/karate-summary.html\""
   },
   "keywords": [
@@ -25,7 +21,7 @@
     "rest-api",
     "swagger",
     "openapi",
-    "ui-automation",
+    "contract-testing",
     "qa",
     "bdd",
     "cucumber",

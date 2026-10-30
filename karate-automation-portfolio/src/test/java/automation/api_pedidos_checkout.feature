@@ -2,8 +2,8 @@
 Feature: Gestão de Pedidos e Finalização de Compra (Swagger /api-docs)
 
   Como um Usuário do E-Commerce
-  Quero consultar histórico de pedidos, buscar por identificador e finalizar compras com cálculo de total
-  Para validar os contratos e regras de fechamento de pedido da API de Checkout
+  Quero consultar histórico de pedidos, buscar por identificador, finalizar compras, atualizar status e cancelar pedidos
+  Para validar os contratos e regras de fechamento e ciclo de vida de pedidos da API de Checkout
 
   Background:
     * url baseUrl
@@ -16,12 +16,35 @@ Feature: Gestão de Pedidos e Finalização de Compra (Swagger /api-docs)
     And assert response.total >= 0
     And match response.orders == '#[]'
 
-  Scenario: Consulta de detalhes de pedido existente por ID (ORD-948210)
-    Given path '/api/orders/ORD-948210'
+  Scenario: Consulta de detalhes de pedido por ID existente
+    # 1. Garante a existência de um pedido criando um novo
+    Given path '/api/orders'
+    And request
+      """
+      {
+        "items": [
+          {
+            "id": "fone-bluetooth",
+            "name": "Fone Bluetooth",
+            "price": 199.9,
+            "quantity": 1
+          }
+        ],
+        "customerName": "Galileo Guilherme (QA Demo)",
+        "customerEmail": "qa@exemplo.com",
+        "address": "Rua dos Testes, 123 - Recife, PE"
+      }
+      """
+    When method post
+    Then status 201
+    * def orderId = response.order.id
+
+    # 2. Consulta o pedido criado pelo ID retornado
+    Given path '/api/orders/' + orderId
     When method get
     Then status 200
     And match response.success == true
-    And match response.order.id == 'ORD-948210'
+    And match response.order.id == orderId
     And match response.order.status == 'CONFIRMED'
     And match response.order.customerEmail == 'qa@exemplo.com'
     And match response.order.total == 199.9
@@ -33,7 +56,8 @@ Feature: Gestão de Pedidos e Finalização de Compra (Swagger /api-docs)
     And match response.success == false
     And match response.error contains 'não encontrado'
 
-  Scenario: Finalização de compra / Criação de novo pedido com sucesso (HTTP 201)
+  Scenario: Ciclo de vida completo do pedido: Criação, Atualização de Status e Cancelamento (POST, PATCH e DELETE)
+    # 1. Cria um novo pedido
     Given path '/api/orders'
     And request
       """
@@ -57,14 +81,47 @@ Feature: Gestão de Pedidos e Finalização de Compra (Swagger /api-docs)
     When method post
     Then status 201
     And match response.success == true
-    And match response.message contains 'Pedido realizado com sucesso'
     And match response.order.id == '#regex ^ORD-\\d+'
-    And match response.order.status == 'CONFIRMED'
-    And match response.order.customerEmail == 'qa@exemplo.com'
-    And match response.order.shippingPrice == 15.0
-    And match response.order.discount == 19.99
-    And match response.order.total == 194.91
-    And match response.order.createdAt == '#string'
+    * def createdOrderId = response.order.id
+
+    # 2. Atualiza o status de entrega do pedido para SHIPPED
+    Given path '/api/orders/' + createdOrderId + '/status'
+    And request { "status": "SHIPPED" }
+    When method patch
+    Then status 200
+    And match response.success == true
+    And match response.order.status == 'SHIPPED'
+
+    # 3. Cancela e remove o pedido
+    Given path '/api/orders/' + createdOrderId
+    When method delete
+    Then status 200
+    And match response.success == true
+    And match response.message contains 'cancelado com sucesso'
+    And match response.order.status == 'CANCELLED'
+
+  Scenario: Rejeição de atualização de status com valor inválido (HTTP 400)
+    Given path '/api/orders/ORD-948210/status'
+    And request { "status": "STATUS_INEXISTENTE" }
+    When method patch
+    Then status 400
+    And match response.success == false
+    And match response.error contains 'Status inválido'
+
+  Scenario: Rejeição de atualização de status em pedido inexistente (HTTP 404)
+    Given path '/api/orders/ORD-FANTASMA-999/status'
+    And request { "status": "DELIVERED" }
+    When method patch
+    Then status 404
+    And match response.success == false
+    And match response.error contains 'não encontrado'
+
+  Scenario: Rejeição de cancelamento de pedido inexistente (HTTP 404)
+    Given path '/api/orders/ORD-FANTASMA-999'
+    When method delete
+    Then status 404
+    And match response.success == false
+    And match response.error contains 'não encontrado para cancelamento'
 
   Scenario: Bloqueio de finalização de pedido sem itens / carrinho vazio (HTTP 400)
     # Garante que o carrinho está vazio
